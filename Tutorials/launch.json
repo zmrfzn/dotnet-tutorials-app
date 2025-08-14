@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "type": "coreclr",
+      "request": "launch",
+      "name": "Launch .NET Core App",
+      "program": "${workspaceFolder}/Tutorials/bin/Debug/net8.0/Tutorials.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Tutorials",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "preLaunchTask": "build"
+    }
+  ]
+}
