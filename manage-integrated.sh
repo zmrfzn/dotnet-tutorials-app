@@ -3,7 +3,7 @@
 # Integrated Management Script for .NET + React App
 # This script manages both the .NET API and React frontend as a single application
 
-PROJECT_DIR="/Users/zfouzan/Documents/codespace/experiments/Tutorials/Tutorials"
+PROJECT_DIR="/root/dotnet-tutorials-app/Tutorials"
 CLIENT_DIR="$PROJECT_DIR/ClientApp"
 
 # Colors for output
@@ -34,6 +34,18 @@ install_ef_tools() {
     
     if dotnet tool list -g | grep -q dotnet-ef; then
         print_success "Entity Framework CLI tool already installed"
+        
+        # Check if it's in PATH, if not, suggest adding to PATH
+        if ! command -v dotnet-ef &> /dev/null; then
+            print_warning "dotnet-ef not found in PATH"
+            print_status "Adding ~/.dotnet/tools to PATH for this session..."
+            export PATH="$PATH:$HOME/.dotnet/tools"
+            
+            # Suggest permanent PATH addition
+            print_status "To permanently add to PATH, add this to your ~/.bashrc or ~/.profile:"
+            print_status "export PATH=\"\$PATH:\$HOME/.dotnet/tools\""
+        fi
+        
         return 0
     fi
     
@@ -56,7 +68,15 @@ install_ef_tools() {
     if timeout 300s dotnet tool install --global dotnet-ef >/dev/null 2>&1; then
         kill $PROGRESS_PID 2>/dev/null || true
         wait $PROGRESS_PID 2>/dev/null || true
+        
+        # Add to PATH for this session
+        export PATH="$PATH:$HOME/.dotnet/tools"
+        
         print_success "Entity Framework CLI tool installed successfully"
+        print_status "Added ~/.dotnet/tools to PATH for this session"
+        print_status "To permanently add to PATH, add this to your ~/.bashrc or ~/.profile:"
+        print_status "export PATH=\"\$PATH:\$HOME/.dotnet/tools\""
+        
         return 0
     else
         kill $PROGRESS_PID 2>/dev/null || true
@@ -177,6 +197,20 @@ migrate_categories() {
     print_success "Categories migrated successfully"
 }
 
+create_database() {
+    print_status "Creating database if it doesn't exist..."
+    cd "$PROJECT_DIR" || exit 1
+    
+    # Try to create the database using psql
+    if command -v psql &> /dev/null; then
+        print_status "Creating tutorials_db database..."
+        PGPASSWORD=root psql -h localhost -U postgres -c "CREATE DATABASE tutorials_db;" 2>/dev/null || true
+        print_success "Database creation attempted"
+    else
+        print_warning "psql not available, assuming database exists"
+    fi
+}
+
 reset_database() {
     print_status "Resetting database..."
     cd "$PROJECT_DIR" || exit 1
@@ -184,34 +218,93 @@ reset_database() {
     # Check if PostgreSQL is running
     if ! pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
         print_error "PostgreSQL is not running. Please start PostgreSQL first."
+        print_status "On Ubuntu: sudo systemctl start postgresql"
         print_status "On macOS with Homebrew: brew services start postgresql"
         exit 1
     fi
     
-    # Test database connection
-    print_status "Testing database connection..."
-    if ! dotnet run seed 2>/dev/null | head -1 | grep -q "Building"; then
-        print_error "Cannot connect to database. Please check your PostgreSQL credentials."
-        print_status "Current connection: Host=localhost;Database=tutorials_db;Username=postgres;Password=root;Port=5432"
-        exit 1
+    # Create database if it doesn't exist
+    create_database
+    
+    # Try to find dotnet-ef in various locations
+    EF_COMMAND=""
+    if command -v dotnet-ef &> /dev/null; then
+        EF_COMMAND="dotnet-ef"
+    elif command -v ~/.dotnet/tools/dotnet-ef &> /dev/null; then
+        EF_COMMAND="~/.dotnet/tools/dotnet-ef"
+    elif [ -f "$HOME/.dotnet/tools/dotnet-ef" ]; then
+        EF_COMMAND="$HOME/.dotnet/tools/dotnet-ef"
+    elif dotnet tool list -g | grep -q dotnet-ef; then
+        # EF is installed but not in PATH, use dotnet tool run
+        EF_COMMAND="dotnet tool run dotnet-ef"
     fi
     
     # Drop and recreate database (if EF tools are available)
-    if command -v dotnet-ef &> /dev/null; then
+    if [ -n "$EF_COMMAND" ]; then
+        print_status "Using EF CLI: $EF_COMMAND"
         print_status "Dropping existing database..."
-        dotnet ef database drop --force 2>/dev/null || true
+        $EF_COMMAND database drop --force 2>/dev/null || true
         
         print_status "Creating database schema..."
-        dotnet ef database update
+        if ! $EF_COMMAND database update; then
+            print_warning "EF database update failed, trying alternative approach..."
+            create_database
+        fi
     else
-        print_warning "Entity Framework CLI not available, skipping database drop/create"
+        print_warning "Entity Framework CLI not available in PATH"
+        print_status "Attempting to create database manually..."
+        create_database
     fi
     
     # Seed with fresh data
     print_status "Seeding database with fresh data..."
+    if dotnet run seed; then
+        print_success "Database reset and seeded successfully"
+    else
+        print_error "Database seeding failed. Please check the database connection and try again."
+        exit 1
+    fi
+}
+
+setup_database() {
+    print_status "Setting up database from scratch..."
+    cd "$PROJECT_DIR" || exit 1
+    
+    # Check if PostgreSQL is running
+    if ! pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
+        print_error "PostgreSQL is not running. Please start PostgreSQL first."
+        print_status "On Ubuntu: sudo systemctl start postgresql"
+        print_status "On macOS: brew services start postgresql"
+        exit 1
+    fi
+    
+    # Create database
+    create_database
+    
+    # Run migrations
+    print_status "Running database migrations..."
+    
+    # Add ~/.dotnet/tools to PATH if it exists
+    if [ -d "$HOME/.dotnet/tools" ]; then
+        export PATH="$PATH:$HOME/.dotnet/tools"
+    fi
+    
+    # Try to run EF migrations
+    if command -v dotnet-ef &> /dev/null; then
+        dotnet ef database update
+    elif [ -f "$HOME/.dotnet/tools/dotnet-ef" ]; then
+        "$HOME/.dotnet/tools/dotnet-ef" database update
+    elif dotnet tool list -g | grep -q dotnet-ef; then
+        dotnet tool run dotnet-ef -- database update
+    else
+        print_warning "EF CLI not found, database may need to be created manually"
+    fi
+    
+    # Seed the database
+    print_status "Seeding database..."
     dotnet run seed
     
-    print_success "Database reset and seeded successfully"
+    print_success "Database setup completed"
 }
 
 clean_all() {
@@ -243,19 +336,20 @@ test_database() {
     # Check if PostgreSQL is running
     if ! pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
         print_error "PostgreSQL is not running"
-        print_status "On macOS with Homebrew: brew services start postgresql"
+        print_status "On Ubuntu: sudo systemctl start postgresql"
+        print_status "On macOS: brew services start postgresql"
         return 1
     fi
     
     print_success "PostgreSQL is running"
     
-    # Test connection with a simple command
-    if dotnet run seed --dry-run 2>/dev/null || dotnet run --help >/dev/null 2>&1; then
-        print_success "Database connection successful"
+    # Test if database exists
+    if PGPASSWORD=root psql -h localhost -U postgres -d tutorials_db -c "SELECT 1;" >/dev/null 2>&1; then
+        print_success "Database 'tutorials_db' exists and is accessible"
         return 0
     else
-        print_error "Database connection failed"
-        print_status "Please check your connection string and PostgreSQL credentials"
+        print_warning "Database 'tutorials_db' does not exist or is not accessible"
+        print_status "Run './manage-integrated.sh setup-db' to create the database"
         return 1
     fi
 }
@@ -293,13 +387,10 @@ workshop_setup() {
     check_requirements
     install_dependencies
     
-    # Test database connection before proceeding
-    if ! test_database; then
-        print_error "Database connection failed. Please fix the database connection before proceeding."
-        exit 1
-    fi
+    # Set up database from scratch
+    setup_database
     
-    reset_database
+    # Build the application
     build_app
     
     print_success "Workshop setup completed!"
@@ -314,6 +405,7 @@ show_help() {
     echo "Commands:"
     echo "  install     - Install all dependencies (.NET + npm)"
     echo "  install-ef  - Install Entity Framework CLI tools only"
+    echo "  setup-db    - Set up database from scratch (create + migrate + seed)"
     echo "  build       - Build both frontend and backend"
     echo "  start       - Start the integrated application (production mode)"
     echo "  dev         - Start in development mode with hot reload"
@@ -323,13 +415,19 @@ show_help() {
     echo "  clean       - Clean all build artifacts"
     echo "  test        - Run all tests and check database connection"
     echo "  test-db     - Test database connection only"
-    echo "  workshop    - Complete workshop setup (install + reset + build)"
+    echo "  workshop    - Complete workshop setup (install + setup-db + build)"
     echo "  help        - Show this help message"
     echo ""
     echo "Application URLs when running:"
     echo "  - React App: http://localhost:5182/"
     echo "  - API:       http://localhost:5182/api/"
     echo "  - Swagger:   http://localhost:5182/swagger"
+    echo ""
+    echo "Ubuntu Setup Notes:"
+    echo "  1. Install PostgreSQL: sudo apt install postgresql postgresql-contrib"
+    echo "  2. Start PostgreSQL: sudo systemctl start postgresql"  
+    echo "  3. Set postgres password: sudo -u postgres psql -c \"ALTER USER postgres PASSWORD 'root';\""
+    echo "  4. Add dotnet tools to PATH: export PATH=\"\$PATH:\$HOME/.dotnet/tools\""
     echo ""
 }
 
@@ -341,6 +439,9 @@ case "${1:-help}" in
         ;;
     "install-ef")
         install_ef_tools
+        ;;
+    "setup-db")
+        setup_database
         ;;
     "build")
         build_app
