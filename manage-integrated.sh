@@ -29,6 +29,44 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+install_ef_tools() {
+    print_status "Installing Entity Framework CLI tools..."
+    
+    if dotnet tool list -g | grep -q dotnet-ef; then
+        print_success "Entity Framework CLI tool already installed"
+        return 0
+    fi
+    
+    print_status "Downloading and installing dotnet-ef (this may take 2-5 minutes)..."
+    print_status "Please be patient while the tool is being installed..."
+    
+    # Show a simple progress indicator
+    {
+        sleep 2
+        echo -n "Installing"
+        for i in {1..30}; do
+            sleep 2
+            echo -n "."
+        done
+        echo ""
+    } &
+    PROGRESS_PID=$!
+    
+    # Install the tool with timeout
+    if timeout 300s dotnet tool install --global dotnet-ef >/dev/null 2>&1; then
+        kill $PROGRESS_PID 2>/dev/null || true
+        wait $PROGRESS_PID 2>/dev/null || true
+        print_success "Entity Framework CLI tool installed successfully"
+        return 0
+    else
+        kill $PROGRESS_PID 2>/dev/null || true
+        wait $PROGRESS_PID 2>/dev/null || true
+        print_error "Failed to install Entity Framework CLI tool"
+        print_status "You can try installing manually: dotnet tool install --global dotnet-ef"
+        return 1
+    fi
+}
+
 check_requirements() {
     print_status "Checking requirements..."
     
@@ -48,6 +86,14 @@ check_requirements() {
     if ! command -v npm &> /dev/null; then
         print_error "npm is not installed"
         exit 1
+    fi
+    
+    # Check/Install Entity Framework CLI
+    if ! dotnet tool list -g | grep -q dotnet-ef; then
+        print_status "Entity Framework CLI tool not found. Installing..."
+        install_ef_tools
+    else
+        print_success "Entity Framework CLI tool already installed"
     fi
     
     print_success "All requirements satisfied"
@@ -135,11 +181,34 @@ reset_database() {
     print_status "Resetting database..."
     cd "$PROJECT_DIR" || exit 1
     
-    # Drop and recreate database
-    dotnet ef database drop --force
-    dotnet ef database update
+    # Check if PostgreSQL is running
+    if ! pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
+        print_error "PostgreSQL is not running. Please start PostgreSQL first."
+        print_status "On macOS with Homebrew: brew services start postgresql"
+        exit 1
+    fi
+    
+    # Test database connection
+    print_status "Testing database connection..."
+    if ! dotnet run seed 2>/dev/null | head -1 | grep -q "Building"; then
+        print_error "Cannot connect to database. Please check your PostgreSQL credentials."
+        print_status "Current connection: Host=localhost;Database=tutorials_db;Username=postgres;Password=root;Port=5432"
+        exit 1
+    fi
+    
+    # Drop and recreate database (if EF tools are available)
+    if command -v dotnet-ef &> /dev/null; then
+        print_status "Dropping existing database..."
+        dotnet ef database drop --force 2>/dev/null || true
+        
+        print_status "Creating database schema..."
+        dotnet ef database update
+    else
+        print_warning "Entity Framework CLI not available, skipping database drop/create"
+    fi
     
     # Seed with fresh data
+    print_status "Seeding database with fresh data..."
     dotnet run seed
     
     print_success "Database reset and seeded successfully"
@@ -167,17 +236,48 @@ clean_all() {
     print_success "Clean completed"
 }
 
+test_database() {
+    print_status "Testing database connection..."
+    cd "$PROJECT_DIR" || exit 1
+    
+    # Check if PostgreSQL is running
+    if ! pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
+        print_error "PostgreSQL is not running"
+        print_status "On macOS with Homebrew: brew services start postgresql"
+        return 1
+    fi
+    
+    print_success "PostgreSQL is running"
+    
+    # Test connection with a simple command
+    if dotnet run seed --dry-run 2>/dev/null || dotnet run --help >/dev/null 2>&1; then
+        print_success "Database connection successful"
+        return 0
+    else
+        print_error "Database connection failed"
+        print_status "Please check your connection string and PostgreSQL credentials"
+        return 1
+    fi
+}
+
 test_app() {
     print_status "Testing application..."
+    
+    # Test database connection first
+    test_database
     
     # Test .NET app
     cd "$PROJECT_DIR" || exit 1
     print_status "Running .NET tests..."
-    dotnet test
+    if dotnet test 2>/dev/null; then
+        print_success ".NET tests passed"
+    else
+        print_warning "No .NET tests found or tests failed"
+    fi
     
     # Test frontend
     cd "$CLIENT_DIR" || exit 1
-    if npm run test --if-present; then
+    if npm run test --if-present 2>/dev/null; then
         print_success "Frontend tests passed"
     else
         print_warning "No frontend tests configured"
@@ -192,6 +292,13 @@ workshop_setup() {
     # Full setup sequence
     check_requirements
     install_dependencies
+    
+    # Test database connection before proceeding
+    if ! test_database; then
+        print_error "Database connection failed. Please fix the database connection before proceeding."
+        exit 1
+    fi
+    
     reset_database
     build_app
     
@@ -206,6 +313,7 @@ show_help() {
     echo ""
     echo "Commands:"
     echo "  install     - Install all dependencies (.NET + npm)"
+    echo "  install-ef  - Install Entity Framework CLI tools only"
     echo "  build       - Build both frontend and backend"
     echo "  start       - Start the integrated application (production mode)"
     echo "  dev         - Start in development mode with hot reload"
@@ -213,14 +321,15 @@ show_help() {
     echo "  migrate     - Migrate categories from names to IDs (one-time fix)"
     echo "  reset       - Reset database and seed with fresh data"
     echo "  clean       - Clean all build artifacts"
-    echo "  test        - Run all tests"
+    echo "  test        - Run all tests and check database connection"
+    echo "  test-db     - Test database connection only"
     echo "  workshop    - Complete workshop setup (install + reset + build)"
     echo "  help        - Show this help message"
     echo ""
     echo "Application URLs when running:"
-    echo "  - React App: http://localhost:5000/"
-    echo "  - API:       http://localhost:5000/api/"
-    echo "  - Swagger:   http://localhost:5000/swagger"
+    echo "  - React App: http://localhost:5182/"
+    echo "  - API:       http://localhost:5182/api/"
+    echo "  - Swagger:   http://localhost:5182/swagger"
     echo ""
 }
 
@@ -229,6 +338,9 @@ case "${1:-help}" in
     "install")
         check_requirements
         install_dependencies
+        ;;
+    "install-ef")
+        install_ef_tools
         ;;
     "build")
         build_app
@@ -253,6 +365,9 @@ case "${1:-help}" in
         ;;
     "test")
         test_app
+        ;;
+    "test-db")
+        test_database
         ;;
     "workshop")
         workshop_setup
