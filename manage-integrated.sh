@@ -91,8 +91,16 @@ check_requirements() {
     print_status "Checking requirements..."
     
     # Check .NET
-    if ! command -v dotnet &> /dev/null; then
+    if ! command -v dotnet &> /dev/null && ! [ -x "/usr/bin/dotnet" ]; then
         print_error ".NET SDK is not installed"
+        print_status "Checked: command -v dotnet and /usr/bin/dotnet"
+        exit 1
+    fi
+    
+    # Verify dotnet actually works
+    if ! dotnet --version &> /dev/null; then
+        print_error ".NET SDK is installed but not working"
+        print_status "dotnet command found at: $(which dotnet 2>/dev/null || echo 'not in PATH')"
         exit 1
     fi
     
