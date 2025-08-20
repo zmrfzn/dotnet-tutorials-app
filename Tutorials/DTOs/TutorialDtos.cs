@@ -3,6 +3,12 @@ using Tutorials.Models;
 
 namespace Tutorials.DTOs;
 
+public class CategoryDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+}
+
 public class CreateTutorialDto
 {
     [Required]

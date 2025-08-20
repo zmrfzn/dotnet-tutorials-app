@@ -8,7 +8,7 @@
 #   ./manage.sh reset    - Reset database and re-seed
 
 PROJECT_DIR="$(dirname "$0")/Tutorials"
-APP_URL="http://localhost:5182"
+APP_URL="http://0.0.0.0:5000;https://0.0.0.0:5001"
 
 case "$1" in
     "seed")
