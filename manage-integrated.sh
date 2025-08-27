@@ -3,7 +3,8 @@
 # Integrated Management Script for .NET + React App
 # This script manages both the .NET API and React frontend as a single application
 
-PROJECT_DIR="/root/dotnet-tutorials-app/Tutorials"
+# Set PROJECT_DIR from environment variable, or default to the script's directory
+PROJECT_DIR="${PROJECT_DIR:-$(dirname "$0")}"
 CLIENT_DIR="$PROJECT_DIR/ClientApp"
 
 # Colors for output
