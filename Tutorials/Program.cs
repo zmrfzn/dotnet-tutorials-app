@@ -1,11 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Tutorials.Data;
 using Tutorials.Commands;
+using Tutorials.Extensions;
 
 // Check if this is a seed command
 if (args.Length > 0 && args[0] == "seed")
 {
     await SeedCommand.ExecuteAsync(args);
+    return;
+}
+
+// Check if this is a migrate-categories command
+if (args.Length > 0 && args[0] == "migrate-categories")
+{
+    await MigrateCategoriesCommand.ExecuteAsync(args);
     return;
 }
 
@@ -26,7 +35,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add CORS
+// Add CORS for development (still useful for API testing)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -35,6 +44,12 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
+});
+
+// Add SPA services
+builder.Services.AddSpaStaticFiles(configuration =>
+{
+    configuration.RootPath = "ClientApp/dist";
 });
 
 var app = builder.Build();
@@ -55,18 +70,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+// Configure static files and SPA
+app.UseStaticFiles();
+app.UseSpaStaticFiles();
+
+app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
 
-// simple route
-app.MapGet("/", () => new { message = "Welcome to tutorial application." });
+// API routes
+app.MapGet("/api", () => new { message = "Welcome to tutorial API." });
 
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/api/weatherforecast", () =>
 {
     var forecast =  Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
@@ -80,6 +101,30 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+// Configure SPA
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "ClientApp";
+    
+    if (app.Environment.IsDevelopment())
+    {
+        // In development, serve from built dist folder
+        var distPath = Path.Combine(app.Environment.ContentRootPath, "ClientApp", "dist");
+        if (Directory.Exists(distPath))
+        {
+            spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(distPath)
+            };
+        }
+        else
+        {
+            // Fallback: use Vite dev server if dist doesn't exist
+            spa.UseViteDevelopmentServer(npmScript: "start");
+        }
+    }
+});
 
 app.Run();
 

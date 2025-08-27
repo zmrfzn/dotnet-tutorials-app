@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Tutorials.Data;
 using Tutorials.DTOs;
 using Tutorials.Models;
+using Tutorials.Services;
 
 namespace Tutorials.Controllers;
 
@@ -29,7 +30,7 @@ public class TutorialsController : ControllerBase
                 Title = dto.Title,
                 Description = dto.Description,
                 Author = dto.Author,
-                Category = dto.Category,
+                Category = CategoryService.GetCategoryId(dto.Category) ?? dto.Category,
                 Published = dto.Published,
                 ReadTime = dto.ReadTime,
                 Difficulty = dto.Difficulty,
@@ -69,6 +70,7 @@ public class TutorialsController : ControllerBase
 
             _logger.LogInformation("Retrieved {Count} tutorials", tutorials.Count);
 
+            // _logger.LogInformation("all tutorials",tutorials.First());
             return Ok(tutorials.Select(MapToResponseDto));
         }
         catch (Exception ex)
@@ -98,16 +100,11 @@ public class TutorialsController : ControllerBase
     }
 
     [HttpGet("categories")]
-    public async Task<ActionResult<IEnumerable<string>>> GetCategories()
+    public ActionResult<IEnumerable<CategoryDto>> GetCategories()
     {
         try
         {
-            var categories = await _context.Tutorials
-                .Where(t => !string.IsNullOrEmpty(t.Category))
-                .Select(t => t.Category!)
-                .Distinct()
-                .ToListAsync();
-
+            var categories = CategoryService.GetAllCategories();
             return Ok(categories);
         }
         catch (Exception ex)
@@ -173,7 +170,7 @@ public class TutorialsController : ControllerBase
             if (!string.IsNullOrEmpty(dto.Title)) tutorial.Title = dto.Title;
             if (dto.Description != null) tutorial.Description = dto.Description;
             if (dto.Author != null) tutorial.Author = dto.Author;
-            if (dto.Category != null) tutorial.Category = dto.Category;
+            if (dto.Category != null) tutorial.Category = CategoryService.GetCategoryId(dto.Category) ?? dto.Category;
             if (dto.Published.HasValue) tutorial.Published = dto.Published.Value;
             if (dto.ReadTime.HasValue) tutorial.ReadTime = dto.ReadTime;
             if (dto.Difficulty.HasValue) tutorial.Difficulty = dto.Difficulty;
@@ -301,7 +298,7 @@ public class TutorialsController : ControllerBase
             Title = tutorial.Title,
             Description = tutorial.Description,
             Author = tutorial.Author,
-            Category = tutorial.Category,
+            Category = tutorial.Category, // Return the category ID - frontend will map to display name
             Published = tutorial.Published,
             ReadTime = tutorial.ReadTime,
             Difficulty = tutorial.Difficulty,
