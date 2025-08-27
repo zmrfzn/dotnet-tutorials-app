@@ -213,7 +213,10 @@ create_database() {
     # Try to create the database using psql
     if command -v psql &> /dev/null; then
         print_status "Creating tutorials_db database..."
-        PGPASSWORD=root psql -h localhost -U postgres -c "CREATE DATABASE tutorials_db;" 2>/dev/null || true
+        if [ -z "$PGPASSWORD" ]; then
+            print_warning "PGPASSWORD environment variable is not set. Please set it before running this script."
+        fi
+        psql -h localhost -U postgres -c "CREATE DATABASE tutorials_db;" 2>/dev/null || true
         print_success "Database creation attempted"
     else
         print_warning "psql not available, assuming database exists"
