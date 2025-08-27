@@ -8,7 +8,17 @@
 #   ./manage.sh reset    - Reset database and re-seed
 
 PROJECT_DIR="$(dirname "$0")/Tutorials"
-APP_URL="http://0.0.0.0:5000;https://0.0.0.0:5001"
+# Set PORT from environment variable or command line, with fallback to default ports
+if [ -n "$2" ]; then
+    PORT="$2"
+elif [ -n "$PORT" ]; then
+    PORT="$PORT"
+else
+    PORT="5001"
+fi
+
+HTTP_PORT=$((PORT - 1))
+APP_URL="http://0.0.0.0:$HTTP_PORT;"
 
 case "$1" in
     "seed")
