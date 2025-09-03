@@ -4,8 +4,15 @@
 # This script manages both the .NET API and React frontend as a single application
 
 # Set PROJECT_DIR from environment variable, or default to the script's directory
-PROJECT_DIR="${PROJECT_DIR:-$(dirname "$0")/Tutorials}"
+# Set PROJECT_DIR from environment variable, or default to the script's directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+echo "SCRIPT_DIR=$SCRIPT_DIR"
+
+PROJECT_DIR="${PROJECT_DIR:-$SCRIPT_DIR/Tutorials}"
+echo "PROJECT_DIR $PROJECT_DIR"
+
 CLIENT_DIR="$PROJECT_DIR/ClientApp"
+echo "CLIENT_DIR=$CLIENT_DIR"
 
 # Colors for output
 RED='\033[0;31m'
