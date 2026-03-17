@@ -1,0 +1,40 @@
+#!/bin/bash
+set -euxo pipefail
+
+until [ -f /opt/instruqt/bootstrap/host-bootstrap-completed ]; do
+    echo "Waiting for instruqt bootstrap to complete"
+    sleep 1
+done
+
+# Install git
+sudo apt update -y
+
+sleep 2
+sudo apt install -y git
+
+# Install curl package
+sudo apt install -y curl wget unzip
+
+#Install postgres database
+sudo apt install postgresql postgresql-contrib -y
+
+# Very important, or database connection fails
+cd / && sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'root';" && cd -
+
+# update postgres connection file to allow password connection
+PG_VERSION=$(ls /etc/postgresql/ | head -n 1)
+sudo sed -i -e 's/peer/md5/g' -e 's/ident/md5/g' /etc/postgresql/$PG_VERSION/main/pg_hba.conf
+
+# restart postgresql service
+sudo systemctl restart postgresql
+
+# # Update node
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n jod #version 22 LTS
+hash -r
+
+sleep 5
+
+## setup Java and Maven
+sudo apt install -y openjdk-21-jdk maven

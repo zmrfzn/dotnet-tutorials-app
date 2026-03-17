@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# required to persist changes across tracks
+cd /root/react-tutorials-crud
+git config --global user.email "instruqt@newrelic.com"
+
+git add -A
+git commit -m "persisting"

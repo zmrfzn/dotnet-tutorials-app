@@ -1,0 +1,38 @@
+#!/bin/bash
+
+sleep 3
+# Clone all the files for java newrelic workshop
+# Note: In a real scenario, this would be a java-specific repo
+git clone https://github.com/zmrfzn/java-tutorials-app.git
+
+
+until [ -d "/root/java-tutorials-app/" ]; do
+    echo "Waiting for repo to be cloned"
+    sleep 1
+done
+
+# setup node runtime variables
+export NODE_ENV=development
+export NEW_RELIC_LOG_ENABLED=false
+
+# install load generator
+npm i -g load-generator
+
+# Install required npm packages for the app
+cd /root/java-tutorials-app
+
+# setup frontend local env file
+cd /root/java-tutorials-app/Tutorials/ClientApp
+cp .env.example .env.local
+
+## wait until java is installed and functional
+until java -version > /dev/null 2>&1; do
+    echo "Waiting for Java to be installed and functional"
+    sleep 1
+done
+
+echo "✅ Java is installed and ready"
+
+# Build the application
+cd /root/java-tutorials-app
+./manage-java.sh build

@@ -1,0 +1,62 @@
+slug: workshop-fullstack-o11y-java
+id: epkyvtebarms
+title: DevRel Workshop - Introduction on Full Stack Observability with New Relic on
+  .NET
+teaser: Instrument a Full Stack application with New Relic for end to end observability
+description: |-
+  ## Objectives
+  This workshop is a great hands-on introduction to the world of observability with New Relic.
+  In this Full Stack Observability workshop, we will take a comprehensive approach to explore a modern .NET stack. We will use .NET Core, PostgreSQL, and React to implement observability practices that allow engineers to monitor and analyze application behavior in real-time, ensuring they always perform at their best. Observability practices involve collecting and analyzing data such as logs, metrics, and traces which helps diagnose issues that may impact the application's performance.
+
+  ## What You'll Learn
+  - Instrument a .NET Core API application with New Relic APM for application performance monitoring.
+  - Set up New Relic Infrastructure agent to monitor the underlying Linux host and system resources.
+  - Configure custom log forwarding and monitoring for application logs in New Relic.
+  - Instrument and monitor a PostgreSQL database with New Relic Infrastructure agent.
+  - Set up New Relic Browser monitoring to track frontend React application performance.
+  - Enhance your telemetry data with custom instrumentation in both .NET backend and React frontend.
+  - Set up New Relic Synthetics to monitor uptime and health for web applications.
+  - Bonus: Use New Relic Flex for agentless instrumentation and custom metrics collection.
+
+  ## Tech Stack
+  - **Backend**: .NET Core 8.0 Web API with Entity Framework
+  - **Database**: PostgreSQL with tutorials and categories data
+  - **Frontend**: React application with Vite build system
+  - **Infrastructure**: Ubuntu Linux VM with New Relic monitoring agents
+
+  ## Requirements
+  * A free [New Relic account](https://newrelic.com/signup?utm_source=instruqt-labs).
+
+  ## Important Note
+  This track utilizes an ephemeral virtual machine, which means that you will lose any progress you've made if you don't complete the workshop within a period of time. We strongly encourage you to finish the workshop in one sitting!
+
+  ### Created by the Developer Relations team in New Relic. Version 1.0 - Aug 2025.
+icon: https://newrelic.com/themes/custom/erno/assets/mediakit/new_relic_logo_vertical.png
+tags:
+- logs in context
+- infrastructure
+- fullstack-o11y
+- browser monitor
+- javascript
+- apm
+- synthetics
+- flex
+- logs
+owner: newrelic
+developers:
+- zfouzan@newrelic.com
+- jonesn@newrelic.com
+show_timer: true
+idle_timeout: 1800
+timelimit: 9000
+lab_config:
+  sidebar_enabled: true
+  feedback_recap_enabled: true
+  feedback_tab_enabled: false
+  loadingMessages: true
+  override_challenge_layout: false
+  hideStopButton: false
+  default_layout: AssignmentRight
+  default_layout_sidebar_size: 33
+checksum: "803815030260541286"
+enhanced_loading: false

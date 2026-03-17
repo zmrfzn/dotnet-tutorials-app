@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# VERY IMPORTANT, else log forwarding doesn't work
+#Install td-agent-bit
+sudo sh -c 'curl https://packages.fluentbit.io/fluentbit.key | gpg --dearmor > /usr/share/keyrings/fluentbit-keyring.gpg'
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] https://packages.fluentbit.io/ubuntu/jammy jammy main" >> /etc/apt/sources.list'
+sudo apt update -y
+sudo apt install td-agent-bit=1.9.9 -y
+
+# setup flog for dummy log generator 
+
+cd /tmp
+wget https://github.com/mingrammer/flog/releases/download/v0.4.3/flog_0.4.3_linux_amd64.tar.gz 
+tar -xzvf flog_0.4.3_linux_amd64.tar.gz 
+
