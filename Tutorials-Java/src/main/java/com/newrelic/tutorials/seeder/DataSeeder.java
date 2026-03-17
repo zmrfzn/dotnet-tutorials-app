@@ -28,6 +28,7 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (args.length > 0 && "seed".equals(args[0])) {
             seedDatabase(true);
+            System.exit(0);
         } else if (tutorialRepository.count() == 0) {
             seedDatabase(false);
         }

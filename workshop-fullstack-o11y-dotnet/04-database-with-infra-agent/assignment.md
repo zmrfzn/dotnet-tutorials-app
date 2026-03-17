@@ -16,11 +16,11 @@ tabs:
 - id: yhpmjdvxyzyp
   title: Terminal
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
 - id: t93znui0kvlr
   title: Editor
   type: code
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /etc/newrelic-infra/integrations.d
 difficulty: basic
 timelimit: 600

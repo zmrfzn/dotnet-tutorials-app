@@ -16,22 +16,22 @@ tabs:
 - id: gwoghs63nmxo
   title: Terminal 1
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
 - id: 0y0ovoj8psk7
   title: LoadGen Terminal
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   workdir: /root/
 - id: kjgqxgnjmpfh
   title: Editor
   type: code
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/src/main/java/com/newrelic/tutorials
 - id: q1xqan2hovbu
   title: Backend Service
   type: service
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /api/tutorials
   port: 5182
 difficulty: basic
@@ -97,7 +97,7 @@ Now, Run the following cmd in [button label="Terminal 1"](tab-0) to start the ap
 ./manage-java.sh seed && ./manage-java.sh start
 ```
 
-Switch to [button label="Terminal 2"](tab-1) & test your Java server. by running the command you will get the URL, open this in a new tab
+Switch to [button label="LoadGen Terminal"](tab-1) & test your Java server. by running the command you will get the URL, open this in a new tab
 
 ```run
 echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
@@ -167,7 +167,7 @@ The New Relic agent will automatically instrument your Java application when it 
 ---
 ### Step 4 - Generate Traffic & Test Data
 
-Switch to [button label="LoadGen Terminal"](tab-2) & generate some API traffic to create monitoring data.
+Switch to [button label="LoadGen Terminal"](tab-1) & generate some API traffic to create monitoring data.
 
 Generate continuous load to create more monitoring data:
 ```run

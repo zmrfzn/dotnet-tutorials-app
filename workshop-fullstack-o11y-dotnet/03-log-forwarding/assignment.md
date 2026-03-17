@@ -16,15 +16,15 @@ tabs:
 - id: cfh5u3gg8pf1
   title: Node
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
 - id: auqmlnsklmpn
   title: Terminal
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
 - id: 4aabjygt5fyb
   title: Config Editor
   type: code
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /etc/newrelic-infra/logging.d
 difficulty: basic
 timelimit: 600

@@ -16,19 +16,19 @@ tabs:
 - id: i7vkiug3xqgh
   title: Application Terminal
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
   cmd: bash
 - id: syxntjgenyif
   title: Terminal 2
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   workdir: /root
   cmd: bash
 - id: o8ygzulnhnji
   title: Editor
   type: code
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/
 difficulty: basic
 timelimit: 600

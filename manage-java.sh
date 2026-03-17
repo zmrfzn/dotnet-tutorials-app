@@ -7,8 +7,9 @@
 #   ./manage-java.sh start    - Start the application
 #   ./manage-java.sh reset    - Reset database and re-seed
 
-JAVA_PROJECT_DIR="$(dirname "$0")/Tutorials-Java"
-CLIENT_DIR="$(dirname "$0")/Tutorials/ClientApp"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+JAVA_PROJECT_DIR="$SCRIPT_DIR/Tutorials-Java"
+CLIENT_DIR="$SCRIPT_DIR/Tutorials/ClientApp"
 APP_PORT=5182
 
 case "$1" in
@@ -48,9 +49,9 @@ case "$1" in
         echo "📍 Application will be available at: http://localhost:$APP_PORT"
         
         # Check if New Relic agent exists
-        if [ -f "../newrelic/newrelic.jar" ]; then
+        if [ -f "/root/newrelic/newrelic.jar" ]; then
             echo "🔍 New Relic agent found, starting with instrumentation..."
-            export JAVA_TOOL_OPTIONS="-javaagent:../newrelic/newrelic.jar"
+            export JAVA_TOOL_OPTIONS="-javaagent:/root/newrelic/newrelic.jar"
         fi
         
         mvn spring-boot:run

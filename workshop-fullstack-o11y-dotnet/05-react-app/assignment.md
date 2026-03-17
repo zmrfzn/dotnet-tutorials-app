@@ -14,21 +14,22 @@ tabs:
 - id: d5jhrmtycdbb
   title: Terminal 1
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
 - id: muocbgdkytnx
   title: Terminal 2
   type: terminal
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
+  workdir: /root/java-tutorials-app
 - id: m7ih0xhxdpff
   title: React Editor
   type: code
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/Tutorials/ClientApp
 - id: bi9ogvcyrhfv
   title: Java Editor
   type: code
-  hostname: fullstack-o11y-dotnet
+  hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/src/main/java/com/newrelic/tutorials
 difficulty: ""
 timelimit: 600
