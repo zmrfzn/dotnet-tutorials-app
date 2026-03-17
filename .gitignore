@@ -382,6 +382,12 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+## Maven build output
+target/
+*.jar
+*.war
+*.ear
+
 ## General temporary files
 *.tmp
 *.temp
