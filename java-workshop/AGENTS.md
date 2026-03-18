@@ -51,7 +51,7 @@ java-workshop/
 
 ## Claude
 
-**Model**: Claude Sonnet 4.6
+**Model**: Claude Sonnet 4.x
 
 ### How to work in this repo
 
@@ -71,7 +71,7 @@ java-workshop/
 
 ## Gemini
 
-**Model**: Gemini (Google DeepMind)
+**Model**: Gemini Flash 
 
 ### How to work in this repo
 
