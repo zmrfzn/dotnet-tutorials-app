@@ -1,6 +1,6 @@
 ---
 slug: react-app
-id: cng90kdvkbzc
+id: qolnbwbvy1fq
 type: challenge
 title: Frontend Real User Monitoring with Browser
 teaser: Real User Monitoring with Single Page Application (SPA) built on React.js.
@@ -11,22 +11,22 @@ notes:
 
     To begin using browser monitoring, you need to add the New Relic browser agent to your webpage's HTML in this challenge. This is a customized JavaScript code snippet that monitors your app's performance and sends the data to New Relic.
 tabs:
-- id: d5jhrmtycdbb
+- id: k0yaa3elfsdh
   title: Terminal 1
   type: terminal
   hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
-- id: muocbgdkytnx
+- id: vpxtkwvlzzbv
   title: Terminal 2
   type: terminal
   hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
-- id: m7ih0xhxdpff
+- id: n1rfyvobwzye
   title: React Editor
   type: code
   hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/Tutorials/ClientApp
-- id: bi9ogvcyrhfv
+- id: 5shyyx9103us
   title: Java Editor
   type: code
   hostname: fullstack-o11y-java
@@ -71,12 +71,12 @@ Switch to [button label="Terminal 2"](tab-1) and test both the API and frontend:
 
 Test the API endpoint:
 ```run
-echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials
+echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials
 ```
 
 Get the frontend URL:
 ```run
-echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
+echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
 ```
 
 Copy the output URL and open it in a new browser tab to verify the React frontend loads correctly.
@@ -97,7 +97,11 @@ First, let's disable the automatic browser instrumentation if it's enabled.
 
 ### Disable Automatic Browser Monitoring
 
-For the Java agent, automatic instrumentation is often disabled by default in `newrelic.yml`. Ensure `browser_monitoring: auto_instrument: false` is set in your configuration.
+The New Relic Java agent ships with a `newrelic.yml` config file at `/root/newrelic/newrelic.yml`. By default it may auto-inject a browser snippet into HTML responses, which conflicts with our manual SPA approach. Disable it by running the following in [button label="Terminal 1"](tab-0):
+
+```run
+sed -i 's/auto_instrument: true/auto_instrument: false/' /root/newrelic/newrelic.yml
+```
 
 The manual option is recommended for:
 - Single Page Applications (SPAs) like our React app
@@ -156,7 +160,7 @@ mvn spring-boot:run
 Switch to [button label="Terminal 2"](tab-1) and get the application URL:
 
 ```run
-echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
+echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
 ```
 
 1. Copy the output URL and open it in your browser

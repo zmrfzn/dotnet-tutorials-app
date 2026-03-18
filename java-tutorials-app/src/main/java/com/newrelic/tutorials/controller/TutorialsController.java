@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -111,10 +112,14 @@ public class TutorialsController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getTutorial(@PathVariable UUID id) {
         try {
-            return tutorialRepository.findById(id)
-                    .map(tutorial -> ResponseEntity.ok(mapToResponseDto(tutorial)))
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body(Map.of("message", "Cannot find Tutorial with id=" + id + ".")));
+            Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
+
+            if (tutorialData.isPresent()) {
+                return ResponseEntity.ok(mapToResponseDto(tutorialData.get()));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Cannot find Tutorial with id=" + id + "."));
+            }
         } catch (Exception ex) {
             log.error("Error retrieving tutorial with ID: {}", id, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -125,7 +130,10 @@ public class TutorialsController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTutorial(@PathVariable UUID id, @RequestBody UpdateTutorialDto dto) {
         try {
-            return tutorialRepository.findById(id).map(tutorial -> {
+            Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
+
+            if (tutorialData.isPresent()) {
+                Tutorial tutorial = tutorialData.get();
                 if (dto.getTitle() != null) tutorial.setTitle(dto.getTitle());
                 if (dto.getDescription() != null) tutorial.setDescription(dto.getDescription());
                 if (dto.getAuthor() != null) tutorial.setAuthor(dto.getAuthor());
@@ -142,8 +150,10 @@ public class TutorialsController {
                 tutorialRepository.save(tutorial);
                 log.info("Updated tutorial with ID: {}", id);
                 return ResponseEntity.ok(Map.of("message", "Tutorial was updated successfully."));
-            }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Cannot update Tutorial with id=" + id + ". Tutorial was not found!")));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Cannot update Tutorial with id=" + id + ". Tutorial was not found!"));
+            }
         } catch (Exception ex) {
             log.error("Error updating tutorial with ID: {}", id, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -154,12 +164,17 @@ public class TutorialsController {
     @PostMapping("/{id}/view")
     public ResponseEntity<?> updateViewCount(@PathVariable UUID id) {
         try {
-            return tutorialRepository.findById(id).map(tutorial -> {
+            Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
+
+            if (tutorialData.isPresent()) {
+                Tutorial tutorial = tutorialData.get();
                 tutorial.setViewCount(tutorial.getViewCount() + 1);
                 tutorialRepository.save(tutorial);
                 return ResponseEntity.ok(Map.of("message", "View count updated successfully.", "viewCount", tutorial.getViewCount()));
-            }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Cannot find Tutorial with id=" + id + ".")));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Cannot find Tutorial with id=" + id + "."));
+            }
         } catch (Exception ex) {
             log.error("Error updating view count for tutorial with ID: {}", id, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -171,7 +186,10 @@ public class TutorialsController {
     public ResponseEntity<?> updateLikes(@PathVariable UUID id, @RequestBody Map<String, Boolean> body) {
         try {
             boolean increment = body.getOrDefault("increment", true);
-            return tutorialRepository.findById(id).map(tutorial -> {
+            Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
+
+            if (tutorialData.isPresent()) {
+                Tutorial tutorial = tutorialData.get();
                 if (increment) {
                     tutorial.setLikes(tutorial.getLikes() + 1);
                 } else {
@@ -179,8 +197,10 @@ public class TutorialsController {
                 }
                 tutorialRepository.save(tutorial);
                 return ResponseEntity.ok(Map.of("message", "Likes updated successfully.", "likes", tutorial.getLikes()));
-            }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Cannot find Tutorial with id=" + id + ".")));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Cannot find Tutorial with id=" + id + "."));
+            }
         } catch (Exception ex) {
             log.error("Error updating likes for tutorial with ID: {}", id, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -191,12 +211,16 @@ public class TutorialsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTutorial(@PathVariable UUID id) {
         try {
-            return tutorialRepository.findById(id).map(tutorial -> {
-                tutorialRepository.delete(tutorial);
+            Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
+
+            if (tutorialData.isPresent()) {
+                tutorialRepository.delete(tutorialData.get());
                 log.info("Deleted tutorial with ID: {}", id);
                 return ResponseEntity.ok(Map.of("message", "Tutorial was deleted successfully!"));
-            }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Cannot delete Tutorial with id=" + id + ". Tutorial was not found!")));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Cannot delete Tutorial with id=" + id + ". Tutorial was not found!"));
+            }
         } catch (Exception ex) {
             log.error("Error deleting tutorial with ID: {}", id, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

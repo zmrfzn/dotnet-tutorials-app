@@ -4,6 +4,8 @@ import TutorialService from "./TutorialService";
 import Logger from "./Logger";
 
 const mapCategories = async (tutorials) => {
+  if (!Array.isArray(tutorials)) return [];
+
   let categories = await getCategoriesFromCache();
 
   const updatedTutorials = tutorials.map((f) => {

@@ -1,6 +1,6 @@
 ---
 slug: infra-agent
-id: ne3a179sx3to
+id: zrjf58xwhdvw
 type: challenge
 title: Instrument Linux OS  with Infrastructure
 teaser: Setup up our Infrastructure instrumentation.
@@ -13,11 +13,11 @@ notes:
 
     This challenge will demonstrate how to instrument your underlying environment with New Relic Infrastructure.
 tabs:
-- id: kqpid7r2xego
+- id: ozg88ltrzkkm
   title: Terminal
   type: terminal
   hostname: fullstack-o11y-java
-- id: zx8u97stdy9a
+- id: kr9owqvlmypy
   title: Editor
   type: code
   hostname: fullstack-o11y-java

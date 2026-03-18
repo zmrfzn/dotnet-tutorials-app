@@ -1,6 +1,6 @@
 ---
 slug: synthetic-monitoring
-id: pqgotnal0swn
+id: cckuxmz0mn0k
 type: challenge
 title: Proactively Catch Issues with Synthetics
 teaser: Proactively catch and resolve issues before they affect your customers.
@@ -13,19 +13,19 @@ notes:
 
     In this challenge, we will setup Synthetics on our Browser  SPA.
 tabs:
-- id: i7vkiug3xqgh
+- id: wmqmfsmqxkte
   title: Application Terminal
   type: terminal
   hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
   cmd: bash
-- id: syxntjgenyif
+- id: esm6wuwnh605
   title: Terminal 2
   type: terminal
   hostname: fullstack-o11y-java
   workdir: /root
   cmd: bash
-- id: o8ygzulnhnji
+- id: xitvrjnl6ivl
   title: Editor
   type: code
   hostname: fullstack-o11y-java
@@ -56,7 +56,7 @@ To add a Simple Browser monitor
 4. To get your previous URL, use this command to get your React Public URL in the [button label="Terminal"](tab-2) tab and paste the details in **URL (required)**.
 
 ```run
-echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
+echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
 ```
 if your application is not running, start the application again in [button label="Application Termincal"](tab-0) by running the following command
 
@@ -94,7 +94,7 @@ To add Scripted Browser monitor
 Use this command again to get your React App's Public URL. **Important** - this is required to setup the monitor correctly!
 
 ```run
-echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
+echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
 ```
 
 > [!NOTE]

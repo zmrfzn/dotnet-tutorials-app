@@ -1,9 +1,10 @@
 ---
 slug: java-server
-id: tqtmrmxzk9a1
+id: ynhmcyiayftq
 type: challenge
 title: Instrument Java Spring Boot application with New Relic
-teaser: Instrument a Java Spring Boot application with New Relic's Application Performance Monitoring.
+teaser: Instrument a Java Spring Boot application with New Relic's Application Performance
+  Monitoring.
 notes:
 - type: text
   contents: |-
@@ -13,22 +14,22 @@ notes:
 
     This challenge will demonstrate how to instrument a simple Java Spring Boot application with New Relic's Application Performance Monitoring.
 tabs:
-- id: gwoghs63nmxo
+- id: rthaukmxl13i
   title: Terminal 1
   type: terminal
   hostname: fullstack-o11y-java
   workdir: /root/java-tutorials-app
-- id: 0y0ovoj8psk7
+- id: qguygscn2lhg
   title: LoadGen Terminal
   type: terminal
   hostname: fullstack-o11y-java
   workdir: /root/
-- id: kjgqxgnjmpfh
+- id: epjswl6jigrt
   title: Editor
   type: code
   hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/src/main/java/com/newrelic/tutorials
-- id: q1xqan2hovbu
+- id: hyxa9m4i8jdq
   title: Backend Service
   type: service
   hostname: fullstack-o11y-java
@@ -73,7 +74,7 @@ Run the following cmd in [button label="Terminal 1"](tab-0), and you should see 
 java -version
 ```
 
-Run the following cmd in [button label="Terminal 1"](tab-0), and you should see **Apache Maven 3.9.x**.
+Run the following cmd in [button label="Terminal 1"](tab-0), and you should see **Apache Maven 3.6.x**.
 
 ```run
 mvn -v
@@ -82,10 +83,6 @@ mvn -v
 ***
 
 - run ``ls`` to see all the files in this Java app were cloned properly from Github.
-- run the command below verify the PATH environment variable is available and set to **development**. This is because we are going to run the apps in development mode
-```bash,run
-echo $NODE_ENV
-```
 
 ***
 
@@ -100,7 +97,7 @@ Now, Run the following cmd in [button label="Terminal 1"](tab-0) to start the ap
 Switch to [button label="LoadGen Terminal"](tab-1) & test your Java server. by running the command you will get the URL, open this in a new tab
 
 ```run
-echo https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
+echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
 ```
 
 Should return JSON in response
@@ -117,6 +114,9 @@ Instrumenting Java application with APM
 In the previous section, we simply verified our application. Now, its time to instrument it
 
 ### Step 1 - Install the New Relic Java Agent
+
+> [!NOTE]
+> There are multiple ways to install the New Relic Java agent. This lab uses the manual zip download, but you can explore other options in the [Java agent install docs](https://docs.newrelic.com/install/java/) or read the [Java agent introduction](https://docs.newrelic.com/docs/apm/agents/java-agent/getting-started/introduction-new-relic-java/) for an overview of all approaches.
 
 If your server is still running, stop it by pressing `Ctrl+C` in [button label="Terminal 1"](tab-0).
 
@@ -171,12 +171,12 @@ Switch to [button label="LoadGen Terminal"](tab-1) & generate some API traffic t
 
 Generate continuous load to create more monitoring data:
 ```run
-npx load-generator --workers 4 --pause 500 https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
+npx load-generator --workers 4 --pause 500 http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
 ```
 
 You can also test other endpoints:
 ```run
-curl https://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
+curl http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
 ```
 
 > [!NOTE]

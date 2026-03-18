@@ -7,18 +7,7 @@
 
 export NODE_ENV=development
 
-cd /root/pern-newrelic/packages/frontend
+cd /root/java-tutorials-app/Tutorials/ClientApp
 
-#switch to the branch `instruqt`
-# git checkout instruqt
-
-# Install required npm packages for the app
-cd /root/pern-newrelic
-
-#switch to the branch `instruqt`
-# git checkout instruqt
-
-npm run install:frontend
-
-cd /root/pern-newrelic/packages/frontend
+# setup frontend local env file
 cp .env.example .env.local

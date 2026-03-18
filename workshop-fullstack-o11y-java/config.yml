@@ -1,10 +1,9 @@
 version: "3"
 virtualmachines:
-- name: fullstack-o11y-dotnet
+- name: fullstack-o11y-java
   image: devrel-instruqt-images/devrel-base-um
   shell: /bin/bash
   environment:
-    ASPNETCORE_ENVIRONMENT: Development
     NODE_ENV: development
   machine_type: e2-standard-4
   allow_external_ingress:

@@ -1,6 +1,6 @@
 ---
 slug: log-forwarding
-id: mjxuwfsbtvs6
+id: yqwotam5krgp
 type: challenge
 title: Configure Log Forwarding with Infrastructure
 teaser: Forward your logs via the Infrastructure agent.
@@ -13,15 +13,15 @@ notes:
 
     This challenge will show how to configure and push logs into New Relic.
 tabs:
-- id: cfh5u3gg8pf1
+- id: bhxpwpk3039e
   title: Node
   type: terminal
   hostname: fullstack-o11y-java
-- id: auqmlnsklmpn
+- id: 4xyq3gv6mgoz
   title: Terminal
   type: terminal
   hostname: fullstack-o11y-java
-- id: 4aabjygt5fyb
+- id: w29yn8vcgbvm
   title: Config Editor
   type: code
   hostname: fullstack-o11y-java

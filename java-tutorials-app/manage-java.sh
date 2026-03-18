@@ -8,7 +8,7 @@
 #   ./manage-java.sh reset    - Reset database and re-seed
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-JAVA_PROJECT_DIR="$SCRIPT_DIR/Tutorials-Java"
+JAVA_PROJECT_DIR="$SCRIPT_DIR"
 CLIENT_DIR="$SCRIPT_DIR/Tutorials/ClientApp"
 APP_PORT=5182
 

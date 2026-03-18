@@ -1,6 +1,6 @@
 ---
 slug: postgres-with-flex
-id: seqfy50ox4dx
+id: wgiuc8pjryjh
 type: challenge
 title: Bonus - Agentless Instrumentation with New Relic Flex
 teaser: Instrument PostgreSQL without using an agent!
@@ -13,11 +13,11 @@ notes:
 
     In this challenge, we will revisit PostgreSQL and attempt to use New Relic Flex to instrument it in an agentless manner.
 tabs:
-- id: fimk94pqunja
+- id: cplqyfm4x8yy
   title: Terminal
   type: terminal
   hostname: fullstack-o11y-java
-- id: iv9gdeesb8uz
+- id: yc9rkadio0ub
   title: Editor
   type: code
   hostname: fullstack-o11y-java

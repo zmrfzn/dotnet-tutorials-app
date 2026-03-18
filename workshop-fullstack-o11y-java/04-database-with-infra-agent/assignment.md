@@ -1,6 +1,6 @@
 ---
 slug: database-with-infra-agent
-id: ixasys7yofsr
+id: b0rucbe0xzdg
 type: challenge
 title: Instrument PostgreSQL with Infrastructure
 teaser: PostgreSQL Instrumentation via the Infrastructure Agent
@@ -13,11 +13,11 @@ notes:
 
     In this challenge, we will explore database instrumentation with New Relic.
 tabs:
-- id: yhpmjdvxyzyp
+- id: kzqcjfopmj3b
   title: Terminal
   type: terminal
   hostname: fullstack-o11y-java
-- id: t93znui0kvlr
+- id: bddulgmy12ns
   title: Editor
   type: code
   hostname: fullstack-o11y-java
