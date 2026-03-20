@@ -23,7 +23,7 @@ tabs:
   hostname: fullstack-o11y-java
   path: /etc/newrelic-infra.yml
 difficulty: basic
-timelimit: 600
+timelimit: 900
 enhanced_loading: null
 ---
 In this challenge, we will set up an Infrastructure Monitoring agent. While there are multiple ways to install and deploy the agent automatically, we will configure it manually to give you a better understanding of how things work.
@@ -90,9 +90,28 @@ newrelic-infra.service            loaded active running     New Relic Infrastruc
 Step 6 - Verify your Infrastructure data in New Relic
 =
 
-Head over to your New Relic account and click on the ***Host*** option in the side panel on the left and you should see an entity named ***fullstack-js-o11y***
+Head over to your New Relic account and click on the ***Host*** option in the side panel on the left and you should see an entity named ***fullstack-o11y-java***
 
 > [!NOTE]
 > It may take up a few minutes before the data is shown on the dashboard
 
 ![Infrastructure in New Relic](../assets/instruqt-infra-agent.jpg)
+
+---
+
+Step 7 - Query Your Infrastructure Data with NRQL
+=
+
+New Relic stores all infrastructure telemetry as queryable events. Open the [Query Builder](https://one.newrelic.com/data-exploration) and run:
+
+```sql
+SELECT average(cpuPercent), average(memoryUsedPercent)
+FROM SystemSample
+WHERE hostname = 'fullstack-o11y-java'
+TIMESERIES SINCE 10 minutes ago
+```
+
+This is the same data powering the Hosts UI — but now fully queryable, so you can use it in custom dashboards and alert conditions.
+
+> [!NOTE]
+> `SystemSample` is the event type the Infrastructure agent reports to New Relic every 5 seconds. Try `FACET hostname` to see how it would look across multiple hosts.

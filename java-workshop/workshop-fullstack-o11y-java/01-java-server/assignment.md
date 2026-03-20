@@ -36,7 +36,7 @@ tabs:
   path: /api/tutorials
   port: 5182
 difficulty: basic
-timelimit: 600
+timelimit: 1200
 enhanced_loading: null
 ---
 While you were waiting on the loading screen a moment ago, Instruqt was deploying the environment used in this workshop on the Linux VM you are accessing via this page.
@@ -197,3 +197,47 @@ You should see:
 > Please wait a few minutes for the service to appear in New Relic UI. It may take 2-5 minutes for data to start appearing.
 
 ![APM in New Relic](../assets/instruqt-APM-summary.png)
+
+---
+### Step 6 - Query Your APM Data with NRQL
+
+New Relic stores all telemetry as queryable events. Open the [Query Builder](https://one.newrelic.com/data-exploration) and try:
+
+```sql
+SELECT average(duration), count(*)
+FROM Transaction
+WHERE appName = 'java-tutorials-server'
+FACET name
+SINCE 10 minutes ago
+```
+
+This shows your top endpoints by request count and average response time — the same data powering the APM charts, but now fully queryable. Any data in New Relic can be queried this way, enabling custom dashboards and alert conditions.
+
+> [!NOTE]
+> `Transaction` is the event type the Java agent reports for every web request. Try replacing `FACET name` with `FACET request.method` to see a breakdown by HTTP method.
+
+---
+### Step 7 - Error Tracking, Logs in Context & Custom Attributes
+
+The Java agent can capture errors with full context — stack traces, custom attributes, linked logs, and distributed traces — all correlated in one place.
+
+The app includes a demo error endpoint. Trigger it a few times from [button label="LoadGen Terminal"](tab-1):
+
+```run
+for i in {1..5}; do curl -s http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/demo-error; echo; done
+```
+
+This endpoint deliberately:
+- Throws a `RuntimeException` and calls `NewRelic.noticeError(e)` to report it to New Relic
+- Adds two **custom attributes** (`error.type` and `error.endpoint`) that appear in the error detail view
+- Logs the error at `ERROR` level, which the agent links to the trace via **Logs in Context**
+
+#### Find the error in New Relic
+
+1. Go to **APM & Services > java-tutorials-server**
+2. Click **Errors Inbox** in the left sidebar
+3. Click into the error group to open the detail view. You should see:
+   - **Stack trace** — the full Java exception and call stack
+   - **Attributes** tab — `error.type` and `error.endpoint` custom attributes visible here
+   - **Logs** tab — the `ERROR` log lines linked to this exact trace
+   - **Distributed trace** — the full request span showing where the error originated

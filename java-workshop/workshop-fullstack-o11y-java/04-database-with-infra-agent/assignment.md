@@ -23,7 +23,7 @@ tabs:
   hostname: fullstack-o11y-java
   path: /etc/newrelic-infra/integrations.d
 difficulty: basic
-timelimit: 600
+timelimit: 900
 enhanced_loading: null
 ---
 The New Relic PostgreSQL on-host integration, also known as OHI, enables you to receive and transmit inventory metrics from your PostgreSQL instance to the New Relic platform. By collecting and visualizing essential performance metrics, this integration provides valuable insights into your PostgreSQL instance's performance.

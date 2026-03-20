@@ -31,7 +31,7 @@ tabs:
   hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/
 difficulty: basic
-timelimit: 600
+timelimit: 900
 enhanced_loading: null
 ---
 Synthetic monitoring is a useful tool for monitoring and testing your apps, allowing you to address issues before they affect your end users. There are various monitors that cover different aspects of a web application. In this document, we will cover two of the commonly used synthetic monitors:

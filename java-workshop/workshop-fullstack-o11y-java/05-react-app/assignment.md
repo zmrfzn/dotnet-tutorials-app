@@ -32,7 +32,7 @@ tabs:
   hostname: fullstack-o11y-java
   path: /root/java-tutorials-app/src/main/java/com/newrelic/tutorials
 difficulty: ""
-timelimit: 600
+timelimit: 1200
 enhanced_loading: null
 ---
 In this exercise, we will instrument a React single-page application (SPA) that is served by our Java Spring Boot application. Our Spring Boot application serves both the API endpoints and the React frontend, providing a unified full-stack monitoring experience with New Relic Browser monitoring.

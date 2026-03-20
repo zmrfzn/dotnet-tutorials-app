@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Challenge 1 check script
+# Validates: NR license key is set + Java is running with the NR agent
+
+if [ -z "$NEW_RELIC_LICENSE_KEY" ]; then
+    fail-message "NEW_RELIC_LICENSE_KEY is not set. Please export your New Relic ingest license key and restart the application."
+fi
+
+if ! pgrep -f "newrelic.jar" > /dev/null 2>&1; then
+    fail-message "Java application is not running with the New Relic agent. Make sure JAVA_TOOL_OPTIONS is set to '-javaagent:/root/newrelic/newrelic.jar' and restart with 'mvn spring-boot:run'."
+fi
+
+exit 0

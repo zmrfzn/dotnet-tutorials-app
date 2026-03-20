@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Challenge 3 check script
+# Validates: logging.d config exists + newrelic-infra is running
+
+if ! ls /etc/newrelic-infra/logging.d/*.yml > /dev/null 2>&1; then
+    fail-message "No logging configuration found in /etc/newrelic-infra/logging.d/. Please create a .yml file there with your log forwarding config."
+fi
+
+if ! systemctl is-active --quiet newrelic-infra; then
+    fail-message "The newrelic-infra service is not running. Please restart it with: systemctl restart newrelic-infra.service"
+fi
+
+exit 0

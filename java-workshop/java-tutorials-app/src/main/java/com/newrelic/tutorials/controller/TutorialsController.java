@@ -1,5 +1,6 @@
 package com.newrelic.tutorials.controller;
 
+import com.newrelic.api.agent.NewRelic;
 import com.newrelic.tutorials.dto.*;
 import com.newrelic.tutorials.model.DifficultyLevel;
 import com.newrelic.tutorials.model.Tutorial;
@@ -259,5 +260,32 @@ public class TutorialsController {
         dto.setCreatedAt(tutorial.getCreatedAt());
         dto.setUpdatedAt(tutorial.getUpdatedAt());
         return dto;
+    }
+
+    // -------------------------------------------------------------------------
+    // Demo error endpoint — used in the observability workshop to demonstrate
+    // New Relic error tracking, Logs in Context, and distributed tracing.
+    // -------------------------------------------------------------------------
+    @GetMapping("/demo-error")
+    public ResponseEntity<?> demoError(
+            @RequestParam(defaultValue = "tutorial-not-found") String errorType) {
+        try {
+            // Custom attributes appear in the Attributes section of the error in NR
+            NewRelic.addCustomAttribute("error.type", errorType);
+            NewRelic.addCustomAttribute("error.endpoint", "/api/tutorials/demo-error");
+
+            log.error("Demo error triggered: errorType={}", errorType);
+            throw new RuntimeException(
+                    "Demo error [" + errorType + "]: intentional error for observability workshop");
+        } catch (RuntimeException e) {
+            NewRelic.noticeError(e);
+            log.error("New Relic noticeError called for: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "error", e.getMessage(),
+                            "errorType", errorType,
+                            "hint", "Check New Relic Errors Inbox for this error with linked traces and logs"
+                    ));
+        }
     }
 }

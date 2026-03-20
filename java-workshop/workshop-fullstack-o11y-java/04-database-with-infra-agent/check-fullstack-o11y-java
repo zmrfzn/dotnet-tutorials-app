@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Challenge 4 check script
+# Validates: nri-postgresql installed + newrelic-infra is running
+
+if ! dpkg -l | grep -q nri-postgresql; then
+    fail-message "The nri-postgresql integration is not installed. Please install it with: sudo apt-get install nri-postgresql -y"
+fi
+
+if ! systemctl is-active --quiet newrelic-infra; then
+    fail-message "The newrelic-infra service is not running. Please restart it with: systemctl restart newrelic-infra.service"
+fi
+
+exit 0

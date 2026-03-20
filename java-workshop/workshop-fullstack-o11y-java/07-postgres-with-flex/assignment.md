@@ -23,7 +23,7 @@ tabs:
   hostname: fullstack-o11y-java
   path: /etc/newrelic-infra/integrations.d/
 difficulty: basic
-timelimit: 600
+timelimit: 900
 enhanced_loading: null
 ---
 ## Flex

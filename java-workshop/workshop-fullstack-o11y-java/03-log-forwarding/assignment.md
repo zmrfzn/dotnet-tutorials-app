@@ -27,7 +27,7 @@ tabs:
   hostname: fullstack-o11y-java
   path: /etc/newrelic-infra/logging.d
 difficulty: basic
-timelimit: 600
+timelimit: 900
 enhanced_loading: null
 ---
 There are multiple ways to send the logs to New Relic, but we are going to leverage the New Relic Infrastructure Agent we installed earlier in this exercise. We will setup log forwarding via **logging.d** integration and will be forwarding sample logs that are generated in the file `/tmp/dummy.log`

@@ -48,7 +48,7 @@ developers:
 - jonesn@newrelic.com
 show_timer: true
 idle_timeout: 1800
-timelimit: 9000
+timelimit: 4800
 lab_config:
   sidebar_enabled: true
   feedback_recap_enabled: true

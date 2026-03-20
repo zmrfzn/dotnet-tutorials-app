@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Challenge 5 check script
+# Validates: New Relic browser snippet is present in index.html
+
+INDEX_HTML="/root/java-tutorials-app/Tutorials/ClientApp/index.html"
+
+if [ ! -f "$INDEX_HTML" ]; then
+    fail-message "index.html not found at $INDEX_HTML. Please make sure you are editing the correct file."
+fi
+
+if ! grep -qE "NREUM|nr-browser-agent|newrelic" "$INDEX_HTML"; then
+    fail-message "New Relic browser snippet not found in index.html. Please paste the snippet from New Relic into the <head> section and rebuild with './manage-java.sh build'."
+fi
+
+exit 0
