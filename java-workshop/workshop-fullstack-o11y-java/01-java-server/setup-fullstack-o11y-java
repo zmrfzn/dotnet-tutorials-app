@@ -36,3 +36,8 @@ echo "✅ Java is installed and ready"
 # Build the application
 cd /root/java-tutorials-app
 ./manage-java.sh build
+
+# Seed the database
+echo "🌱 Seeding database..."
+mvn spring-boot:run -Dspring-boot.run.arguments="seed"
+echo "✅ Database seeded"

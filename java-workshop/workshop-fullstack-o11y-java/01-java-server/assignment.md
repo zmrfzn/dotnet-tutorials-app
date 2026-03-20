@@ -88,16 +88,7 @@ mvn -v
 
 Start & Verify your Java API service
 =================
-First, seed the database with sample data. Run the following in [button label="Terminal 1"](tab-0):
-
-```run
-mvn spring-boot:run -Dspring-boot.run.arguments="seed"
-```
-
-> [!NOTE]
-> Wait until you see "Seeding complete" in the output, then press `Ctrl+C` to stop the process.
-
-Now start the application:
+The database has been seeded automatically during setup. Start the application in [button label="Terminal 1"](tab-0):
 
 ```run
 mvn spring-boot:run
