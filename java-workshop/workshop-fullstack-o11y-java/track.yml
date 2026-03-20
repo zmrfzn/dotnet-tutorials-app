@@ -1,7 +1,7 @@
 slug: workshop-fullstack-o11y-java
 id: aqy9hlqlu5gv
 title: DevRel Workshop - Introduction on Full Stack Observability with New Relic on
-  Java
+  Java stack
 teaser: Instrument a Full Stack application with New Relic for end to end observability
 description: |-
   ## Objectives
@@ -30,13 +30,14 @@ description: |-
   ## Important Note
   This track utilizes an ephemeral virtual machine, which means that you will lose any progress you've made if you don't complete the workshop within a period of time. We strongly encourage you to finish the workshop in one sitting!
 
-  ### Created by the Developer Relations team in New Relic. Version 1.0 - Aug 2025.
+  ### Created by the Developer Relations team in New Relic. Version 1.0 - Mar 2026.
 icon: https://newrelic.com/themes/custom/erno/assets/mediakit/new_relic_logo_vertical.png
 tags:
 - logs in context
 - infrastructure
 - fullstack-o11y
 - browser monitor
+- java
 - javascript
 - apm
 - synthetics
@@ -48,7 +49,7 @@ developers:
 - jonesn@newrelic.com
 show_timer: true
 idle_timeout: 1800
-timelimit: 4800
+timelimit: 6000
 lab_config:
   sidebar_enabled: true
   feedback_recap_enabled: true
