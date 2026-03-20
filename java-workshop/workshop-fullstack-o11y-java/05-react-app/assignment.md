@@ -137,10 +137,23 @@ Now we'll add the New Relic browser monitoring snippet to our React application:
 
 ### Step 3 - Build the Application
 
-Run the following command in [button label="Terminal 2"](tab-1) to rebuild the frontend application and copy it to the Java static resources:
+This step does three things: builds the React SPA into static files, copies them into Spring Boot's static resource directory so they're served from port 5182, then recompiles the Java app.
 
+Run the following commands in [button label="Terminal 2"](tab-1):
+
+Install frontend dependencies and build:
 ```run
-./manage-java.sh build
+cd /root/java-tutorials-app/Tutorials/ClientApp && npm install && npm run build
+```
+
+Copy the build output to Spring Boot's static resources:
+```run
+cp -r /root/java-tutorials-app/Tutorials/ClientApp/dist/* /root/java-tutorials-app/src/main/resources/static/
+```
+
+Compile and package the Java application:
+```run
+cd /root/java-tutorials-app && mvn clean install -DskipTests
 ```
 
 ### Step 4 - Restart the Application

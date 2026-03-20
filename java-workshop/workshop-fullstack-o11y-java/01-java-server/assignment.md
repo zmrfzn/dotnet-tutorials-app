@@ -23,7 +23,7 @@ tabs:
   title: LoadGen Terminal
   type: terminal
   hostname: fullstack-o11y-java
-  workdir: /root/
+  workdir: /root/java-tutorials-app
 - id: epjswl6jigrt
   title: Editor
   type: code
@@ -51,7 +51,7 @@ Now that the deployment has been completed, run the following commands to valida
 
 Verify Node & NPM
 =================
-Node.js is needed for this workshop for the frontend app.
+Node.js is required for two things in this workshop: the `npx load-generator` traffic tool used in this challenge, and the React frontend build in Challenge 5. It is not the primary language — Java is — but these tools depend on it.
 
 Run the following cmd in [button label="Terminal 1"](tab-0), and you should see **v22.x.x**.
 
@@ -88,10 +88,19 @@ mvn -v
 
 Start & Verify your Java API service
 =================
-Now, Run the following cmd in [button label="Terminal 1"](tab-0) to start the application and seed the database.
+First, seed the database with sample data. Run the following in [button label="Terminal 1"](tab-0):
 
 ```run
-./manage-java.sh seed && ./manage-java.sh start
+mvn spring-boot:run -Dspring-boot.run.arguments="seed"
+```
+
+> [!NOTE]
+> Wait until you see "Seeding complete" in the output, then press `Ctrl+C` to stop the process.
+
+Now start the application:
+
+```run
+mvn spring-boot:run
 ```
 
 Switch to [button label="LoadGen Terminal"](tab-1) & test your Java server. by running the command you will get the URL, open this in a new tab
@@ -169,18 +178,14 @@ The New Relic agent will automatically instrument your Java application when it 
 
 Switch to [button label="LoadGen Terminal"](tab-1) & generate some API traffic to create monitoring data.
 
-Generate continuous load to create more monitoring data:
-```run
-npx load-generator --workers 4 --pause 500 http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
-```
+Generate continuous load to create monitoring data. This reads the `load-generator.json` config in this directory and generates traffic across all configured endpoints — tutorials, categories, difficulty filters, and the demo error endpoint:
 
-You can also test other endpoints:
 ```run
-curl http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/categories
+npx load-generator
 ```
 
 > [!NOTE]
-> Press `Ctrl+C` to stop the load generation when you have enough data.
+> Press `Ctrl+C` to stop the load generation when you have enough data (about 1-2 minutes is sufficient).
 
 ---
 ### Step 5 - Verify APM in New Relic
@@ -221,11 +226,14 @@ This shows your top endpoints by request count and average response time — the
 
 The Java agent can capture errors with full context — stack traces, custom attributes, linked logs, and distributed traces — all correlated in one place.
 
-The app includes a demo error endpoint. Trigger it a few times from [button label="LoadGen Terminal"](tab-1):
+The app includes a demo error endpoint. The `load-generator.json` already includes it, so run the load generator from [button label="LoadGen Terminal"](tab-1) to generate both normal and error traffic together:
 
 ```run
-for i in {1..5}; do curl -s http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182/api/tutorials/demo-error; echo; done
+npx load-generator
 ```
+
+> [!NOTE]
+> Let it run for about 1 minute to generate enough error events, then press `Ctrl+C`.
 
 This endpoint deliberately:
 - Throws a `RuntimeException` and calls `NewRelic.noticeError(e)` to report it to New Relic

@@ -61,7 +61,7 @@ echo http://$HOSTNAME.$_SANDBOX_ID.instruqt.io:5182
 if your application is not running, start the application again in [button label="Application Termincal"](tab-0) by running the following command
 
 ```run
-./manage-java.sh start
+mvn spring-boot:run
 ```
 
 5. Choose **ONE** location from the list.

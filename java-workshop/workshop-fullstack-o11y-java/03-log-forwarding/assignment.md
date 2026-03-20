@@ -14,7 +14,7 @@ notes:
     This challenge will show how to configure and push logs into New Relic.
 tabs:
 - id: bhxpwpk3039e
-  title: Node
+  title: Terminal
   type: terminal
   hostname: fullstack-o11y-java
 - id: 4xyq3gv6mgoz
@@ -85,7 +85,7 @@ Head over to your New Relic account, and select **Logs** from the side panel on 
 Bonus - Automatic Logs in Context For Distributed Tracing
 =====
 
-One of the other ways in which logs are collected is via APM. When we set up our APM agent in our node service, the APM automatically captures contextual logging from our service during runtime.
+One of the other ways in which logs are collected is via APM. When we set up our APM agent in our Java application, the APM automatically captures contextual logging from our service during runtime.
 
 In the same app you had earlier, select **Distributed Tracing** in the main APM UI.
 1. Choose any trace of API calls

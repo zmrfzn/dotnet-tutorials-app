@@ -1,0 +1,16 @@
+{
+  "pause": 500,
+  "workers": 4,
+  "timeout": 5000,
+  "urls": [
+    "http://localhost:5182/api/{endpoints}",
+    "http://localhost:5182/api/{endpoints}/published",
+    "http://localhost:5182/api/{endpoints}/categories",
+    "http://localhost:5182/api/{endpoints}/difficulty/{difficulty_levels}",
+    "http://localhost:5182/api/{endpoints}/demo-error"
+  ],
+  "values": {
+    "endpoints": ["tutorials"],
+    "difficulty_levels": ["beginner", "intermediate", "advanced"]
+  }
+}
